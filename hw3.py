@@ -70,19 +70,19 @@ past_exp = []
 print("Basic Requirements")
 for num_exp in range(n_exp):
     Zs = np.random.normal(size = (total_experiment, n))
-    print(np.cov(Zs.T))
+    # print(np.cov(Zs.T))
     Zs_ = np.matmul(Zs, A) # Zs_ is r
     
-    break
-    # for i in range(n):
-    #     Zs_[:, i] = Zs_[:, i] + mus[i]
-    # Zs_ = np.exp(Zs_)
-    # payoff = [np.max( np.max(Zs_[i, :])  - K, 0) for i in range(total_experiment)]
+    # break
+    for i in range(n):
+        Zs_[:, i] = Zs_[:, i] + mus[i]
+    Zs_ = np.exp(Zs_)
+    payoff = [np.max( np.max(Zs_[i, :])  - K, 0) for i in range(total_experiment)]
 
-    # print(np.exp(-r * T) * np.mean(payoff))
-    # past_exp.append(np.exp(-r * T) * np.mean(payoff))
+    print(np.exp(-r * T) * np.mean(payoff))
+    past_exp.append(np.exp(-r * T) * np.mean(payoff))
 
-# print(np.mean(past_exp) - 2 * np.std(past_exp), np.mean(past_exp) + 2 * np.std(past_exp))
+print(np.mean(past_exp) - 2 * np.std(past_exp), np.mean(past_exp) + 2 * np.std(past_exp))
 
 ################ [Bonus 1]
 
@@ -93,31 +93,51 @@ print("Bonus")
 for num_exp in range(n_exp):
     Zs = np.random.normal(size = (int(total_experiment / 2), n))
     Zs = np.vstack((Zs, -Zs))
-    print(Zs.shape)
+    Zs_ = np.zeros_like(Zs)
+    # print(Zs.shape)
 
     for i in range(n):
-        Zs_[:, i] /= np.std(Zs[:, i])
-
-    print("Covariance of converted Z_hat")
-    print(np.cov(Zs.T))
-    Zs_b1 = np.matmul(Zs_, A) # Zs_ is r
+        Zs[:, i] /= np.std(Zs[:, i])
+    Zs_ = np.matmul(Zs, A) # Zs_ is r
     # print(np.cov(Zs_.T))
-    # for i in range(n):
-    #     Zs_[:, i] = Zs_[:, i] + mus[i]
-    # Zs_ = np.exp(Zs_)
-    # payoff = [np.max( np.max(Zs_[i, :])  - K, 0) for i in range(total_experiment)]
+    for i in range(n):
+        Zs_[:, i] = Zs_[:, i] + mus[i]
+    Zs_ = np.exp(Zs_)
+    payoff = [np.max( np.max(Zs_[i, :])  - K, 0) for i in range(total_experiment)]
 
-    # print(np.exp(-r * T) * np.mean(payoff))
-    # past_exp.append(np.exp(-r * T) * np.mean(payoff))
-    break
-# print(np.mean(past_exp) - 2 * np.std(past_exp), np.mean(past_exp) + 2 * np.std(past_exp))
+    print(np.exp(-r * T) * np.mean(payoff))
+    past_exp.append(np.exp(-r * T) * np.mean(payoff))
+    # break
+print(np.mean(past_exp) - 2 * np.std(past_exp), np.mean(past_exp) + 2 * np.std(past_exp))
 
 
 # ## Bonus 2
 print("Bonus 2")
-BB = np.cov(Zs_.T)
-B = np.zeros((n, n))
-Cholesky(BB, B)
-Zs_b2 = np.matmul(Zs_, np.linalg.inv(B))
-print("Covariance of converted Z_hat")
-print(np.cov(Zs_b2.T))
+# BB = np.cov(Zs_.T)
+# B = np.zeros((n, n))
+# Cholesky(BB, B)
+# Zs_b2 = np.matmul(Zs_, np.linalg.inv(B))
+# print("Covariance of converted Z_hat")
+# print(np.cov(Zs_b2.T))
+
+past_exp = []
+for num_exp in range(n_exp):
+    Zs = np.random.normal(size = (int(total_experiment / 2), n))
+    Zs = np.vstack((Zs, -Zs))
+    
+    for i in range(n):
+        Zs[:, i] /= np.std(Zs[:, i])
+    BB = np.cov(Zs.T)
+    B = np.zeros((n, n))
+    Cholesky(BB, B)
+    Zs_ = np.matmul(Zs, np.linalg.inv(B))
+    Zs_ = np.matmul(Zs_, A) # Zs_ is r
+    # print(np.cov(Zs_.T))
+    for i in range(n):
+        Zs_[:, i] = Zs_[:, i] + mus[i]
+    Zs_ = np.exp(Zs_)
+    payoff = [np.max( np.max(Zs_[i, :])  - K, 0) for i in range(total_experiment)]
+
+    print(np.exp(-r * T) * np.mean(payoff))
+    past_exp.append(np.exp(-r * T) * np.mean(payoff))
+print(np.mean(past_exp) - 2 * np.std(past_exp), np.mean(past_exp) + 2 * np.std(past_exp))
