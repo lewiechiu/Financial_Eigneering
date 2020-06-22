@@ -1,0 +1,9 @@
+St = 50
+Smax_t = 50
+r = 0.1
+q = 0.
+sigma = 0.4
+t = 0
+T = 0.25
+n = 1000
+european_option = True
